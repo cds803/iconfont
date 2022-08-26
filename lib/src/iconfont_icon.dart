@@ -20,7 +20,10 @@ class IconFontIcon {
 
     if (data.fontFamily!.isNotEmpty) Pub.addAssert(data.fontFamily!, ttfPath);
 
-    Utils.writeToFile(savePath, tmp);
+    Utils.writeToFile(
+      savePath,
+      contents: tmp,
+    );
 
     print("build $savePath from $ttfPath and $jsonPath");
   }

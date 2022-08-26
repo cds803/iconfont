@@ -21,16 +21,20 @@ class IconFontCss {
   downloadFromCss() async {
     if (cssUrl.isEmpty) return;
 
-    final data = IconFontData.parse(await Utils.httpGet(cssUrl));
+    final response = await Utils.httpGet(cssUrl);
+
+    if (response == null) return;
+
+    final data = IconFontData.parse(response.body);
     data.fontPackage = fontPackage;
     Utils.writeToFile(
       path.joinAll([dirPath, Constants.ICONFONT_FILE_JSON]),
-      jsonEncode(data),
+      contents: jsonEncode(data),
     );
 
     Utils.writeToFile(
       path.joinAll([dirPath, Constants.ICONFONT_FILE_TEXT]),
-      data.tffPath!,
+      contents: data.tffPath!,
     );
 
     await Utils.downloadToFile(

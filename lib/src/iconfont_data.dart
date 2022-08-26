@@ -29,7 +29,7 @@ class IconFontData {
           unicodeDecimal: '',
         );
       }).toList(),
-      tffPath: RegExp(r"//at.alicdn.com/t/font.*\.ttf\?t=[0-9]{13}")
+      tffPath: RegExp(r"//at.alicdn.com/t(\/c|)/font.*\.ttf\?t=[0-9]{13}")
               .stringMatch(data) ??
           "",
     );

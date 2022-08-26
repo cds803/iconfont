@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:http/http.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:http/http.dart' as http;
@@ -29,29 +32,40 @@ class Utils {
   }
 
   // 写入文件
-  static writeToFile(String filePath, String contents) {
+  static writeToFile(String filePath, {String? contents, Uint8List? bytes}) {
     createDir(path.dirname(filePath));
-    File(filePath).writeAsStringSync(contents);
+
+    if (contents != null) {
+      File(filePath).writeAsStringSync(contents);
+    }
+
+    if (bytes != null) {
+      File(filePath).writeAsBytesSync(bytes);
+    }
   }
 
   // http get
-  static Future<String> httpGet(String url) async {
+  static Future<Response?> httpGet(String url) async {
     Uri uri = Uri.parse(url);
-    uri = uri.replace(scheme: "http");
+    uri = uri.replace(scheme: "https");
 
     final rsp = await http.get(uri);
     if (rsp.statusCode != 200) {
       print("${uri.toString()} 请求失败 , statusCode = ${rsp.statusCode}");
-      return "";
+      return null;
     }
 
-    final contents = rsp.body;
-    return contents;
+    return rsp;
   }
 
   // 下载到文件
   static Future<void> downloadToFile(String filePath, String url) async {
-    final contents = await httpGet(url);
-    writeToFile(filePath, contents);
+    final response = await httpGet(url);
+    if (response == null) return;
+
+    writeToFile(
+      filePath,
+      bytes: response.bodyBytes,
+    );
   }
 }
